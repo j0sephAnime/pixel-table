@@ -1,1 +1,1 @@
-# pixel-table
+# Pixel table
