@@ -1,39 +1,18 @@
-import os, glob
-from PIL import Image
+from aiogram import *
+from config import *
+from table import *
 
-def checkFiles():
-	for fileName in os.listdir():
-		if fileName != "pixelWhite.png":
-			image = Image.new("RGBA", (24, 24), color = (255, 255, 255))
-			image.save("pixelWhite.png")
-			if fileName != "pixelBlack.png":
-				image = Image.new("RGBA", (24, 24), color = (0, 0, 0))
-				image.save("pixelBlack.png")
-				if fileName != "background.png":
-					image = Image.new("RGBA", (1920, 1080), color = (0, 0, 0))
-					image.save("background.png")
+bot = Bot(token = token)
+dp = Dispatcher(bot)
 
-def getNumber():
-	files = glob.glob("result/*.png")
-	number = 0
-	for i in files:
-		number = number + 1
-	return number
+@dp.message_handler(content_types = ["text"])
+async def text(message):
+	if len(message.text) >= 12 or len(message.text) <= 14:
+		message = message.text.replace("=", "").replace(" ", "").replace(",", " ").replace("x", "").replace("y", "").split()
+		if len(message) <= 2 or len(message) >= 4:
+			if int(message[0]) < 1920 / 24:
+				if int(message[1]) < 1080 / 24:
+					pixelTable(int(message[0]), int(message[1]))
 
-checkFiles()
-while True:
-	x = int(input("x: "))
-	y = int(input("y: "))
-	if x <= 1920 / 24:
-		if y <= 1080 / 24:
-			image = Image.open("background.png")
-			if image.getpixel((x * 24 - 24, y * 24 - 24)) == (0, 0, 0, 255):
-				pixel = Image.open("pixelWhite.png")
-				image.paste(pixel, (x * 24 - 24, y * 24 - 24),  pixel)
-				image.save("background.png")
-				image.save("result/background_" + str(getNumber()) + ".png")
-			else:
-				pixel = Image.open("pixelBlack.png")
-				image.paste(pixel, (x * 24 - 24, y * 24 - 24),  pixel)
-				image.save("background.png")
-				image.save("result/background_" + str(getNumber()) + ".png")
+if __name__ == "__main__":
+	executor.start_polling(dp)
