@@ -11,6 +11,10 @@ if os.path.exists("background.png") == False:
 			image = Image.new("RGBA", (24, 24), color = (0, 0, 0))
 			image.save("pixelBlack.png")
 
+def clearTable():
+	image = Image.new("RGBA", (1920, 1080), color = (0, 0, 0))
+	image.save("background.png")
+
 def getNumber():
 	files = glob.glob("result/*.png")
 	number = 0
